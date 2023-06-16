@@ -1,12 +1,43 @@
+
+// /renderer/_default.page.server.js
+// Environment: server
+
+export { onBeforeRender }
 export { render }
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps', 'urlPathname']
+export const passToClient = ['pageProps', 'urlPathname', 'documentProps', 'isRunOnServer', 'remark']
 
 import ReactDOMServer from 'react-dom/server'
 import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
 import logoUrl from './logo.svg'
 import type { PageContextServer } from './types'
+import fetch from "node-fetch";
+
+// defined to use as the global onBeforeRender only in this file
+async function onBeforeRender(pageContext: any) {
+  // The route parameter of `/star-wars/@movieId` is available at `pageContext.routeParams`
+  const { movieId } = pageContext.routeParams;
+
+  // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
+  const response = await fetch(`https://swapi.dev/api/films/${movieId}`);
+  let movie = await response.json();
+
+  // Our render and hydrate functions we defined earlier pass `pageContext.pageProps` to
+  // the root React component `Page`; this is where we define `pageProps`.
+  const pageProps = { movie, pageId: movieId };
+
+  // console.log("move page server : ", movie)
+
+  // We make `pageProps` available as `pageContext.pageProps`
+  return {
+    pageContext: {
+      pageProps,
+      // isRunOnServer: true,
+      remark: 'this-override-_default.page.server.tsx-file',
+    },
+  };
+}
 
 async function render(pageContext: PageContextServer) {
   const { Page, pageProps } = pageContext
@@ -43,6 +74,14 @@ async function render(pageContext: PageContextServer) {
     documentHtml,
     pageContext: {
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
+      isRunOnServer: true,
+      remark: 'this-from-_default.page.server.tsx-file',
     }
   }
 }
+
+
+
+
+
+
