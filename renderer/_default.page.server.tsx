@@ -33,9 +33,11 @@ async function render(pageContext: PageContextServer) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="react-root">${dangerouslySkipEscape(pageHtml)}</div>
+        <div id="react-root" class="testapp">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
+
+    console.log("run on server side default",)
 
   return {
     documentHtml,

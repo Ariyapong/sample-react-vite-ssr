@@ -31,6 +31,7 @@ function PageShell({ children, pageContext }: { children: React.ReactNode; pageC
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div
+      className='layout'
       style={{
         display: 'flex',
         maxWidth: 900,
