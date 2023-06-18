@@ -32,5 +32,8 @@
     "vite": "^4.0.3",
     "vite-plugin-ssr": "^0.4.131"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "sass": "^1.63.4"
+  }
 }

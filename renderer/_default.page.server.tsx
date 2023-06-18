@@ -2,11 +2,14 @@
 // /renderer/_default.page.server.js
 // Environment: server
 
-export { onBeforeRender }
+// export { onBeforeRender }
 export { render }
 // See https://vite-plugin-ssr.com/data-fetching
 export const passToClient = ['pageProps', 'urlPathname', 'documentProps', 'isRunOnServer', 'remark']
 
+import "#root/assets/styles/global.styles.scss"
+// import "@/assets/styles/global.styles.scss"
+import styles from "#root/assets/styles/test.styles.module.scss";
 import ReactDOMServer from 'react-dom/server'
 import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
@@ -45,6 +48,8 @@ async function render(pageContext: PageContextServer) {
   if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined')
   const pageHtml = ReactDOMServer.renderToString(
     <PageShell pageContext={pageContext}>
+      <p className={`${styles.testColor} font-bold`}>test style</p>
+      {/* <p className={`font-bold`}>test style</p> */}
       <Page {...pageProps} />
     </PageShell>
   )

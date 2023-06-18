@@ -3,6 +3,7 @@
 
 import React from "react";
 import { navigate } from "vite-plugin-ssr/client/router";
+import { LayoutDefault } from '../../layout/LayoutDefault'
 
 export { Page };
 
@@ -24,7 +25,7 @@ function Page(pageProps: any) {
   };
 
   return (
-    <>
+    <LayoutDefault>
       {movie && Object.keys(movie).length > 0 && (
         <>
           <h1>{movie.title}</h1>
@@ -45,6 +46,6 @@ function Page(pageProps: any) {
         </>
       )}
       {!movie && <div>No content to render..</div>}
-    </>
+    </LayoutDefault>
   );
 }
