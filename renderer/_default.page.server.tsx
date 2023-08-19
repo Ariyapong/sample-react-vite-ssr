@@ -1,21 +1,30 @@
-
 // /renderer/_default.page.server.js
 // Environment: server
-
+// import "../public/antd.min.css";
+// import cssUrl from "../public/antd.min.css?url";
 // export { onBeforeRender }
-export { render }
+export { render };
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps', 'urlPathname', 'documentProps', 'isRunOnServer', 'remark']
+export const passToClient = [
+  "pageProps",
+  "urlPathname",
+  "documentProps",
+  "isRunOnServer",
+  "remark",
+];
 
-import "#root/assets/styles/global.styles.scss"
+import "../public/antd.min.css";
+import "#root/assets/styles/global.styles.scss";
 // import "@/assets/styles/global.styles.scss"
 import styles from "#root/assets/styles/test.styles.module.scss";
-import ReactDOMServer from 'react-dom/server'
-import { PageShell } from './PageShell'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
-import logoUrl from './logo.svg'
-import type { PageContextServer } from './types'
+import ReactDOMServer from "react-dom/server";
+import { PageShell } from "./PageShell";
+import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr/server";
+import logoUrl from "./logo.svg";
+import type { PageContextServer } from "./types";
 import fetch from "node-fetch";
+import { StyleProvider } from "@ant-design/cssinjs";
+import withTheme from "../pages/theme";
 
 // defined to use as the global onBeforeRender only in this file
 async function onBeforeRender(pageContext: any) {
@@ -37,28 +46,36 @@ async function onBeforeRender(pageContext: any) {
     pageContext: {
       pageProps,
       // isRunOnServer: true,
-      remark: 'this-override-_default.page.server.tsx-file',
+      remark: "this-override-_default.page.server.tsx-file",
     },
   };
 }
 
 async function render(pageContext: PageContextServer) {
-  const { Page, pageProps } = pageContext
+  const { Page, pageProps } = pageContext;
   // This render() hook only supports SSR, see https://vite-plugin-ssr.com/render-modes for how to modify render() to support SPA
-  if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined')
+  if (!Page)
+    throw new Error("My render() hook expects pageContext.Page to be defined");
   const pageHtml = ReactDOMServer.renderToString(
     <PageShell pageContext={pageContext}>
-      <p className={`${styles.testColor} font-bold`}>test style</p>
+      {/* <StyleProvider hashPriority="high"> */}
+      {/* <p className={`${styles.testColor} font-bold`}>test style</p> */}
       {/* <p className={`font-bold`}>test style</p> */}
+
       <Page {...pageProps} />
+      {/* </StyleProvider> */}
     </PageShell>
-  )
-
+  );
+  // console.log("debug url : ", cssUrl);
+  console.log("debug logo : ", logoUrl);
   // See https://vite-plugin-ssr.com/head
-  const { documentProps } = pageContext.exports
-  const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
+  const { documentProps } = pageContext.exports;
+  const title = (documentProps && documentProps.title) || "Vite SSR app";
+  const desc =
+    (documentProps && documentProps.description) ||
+    "App using Vite + vite-plugin-ssr";
 
+  // <link rel="stylesheet" href="${cssUrl}" />
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -69,24 +86,20 @@ async function render(pageContext: PageContextServer) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="react-root" class="testapp">${dangerouslySkipEscape(pageHtml)}</div>
+        <div id="react-root" class="testapp">${dangerouslySkipEscape(
+          pageHtml
+        )}</div>
       </body>
-    </html>`
+    </html>`;
 
-    console.log("run on server side default",)
+  console.log("run on server side default");
 
   return {
     documentHtml,
     pageContext: {
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
       isRunOnServer: true,
-      remark: 'this-from-_default.page.server.tsx-file',
-    }
-  }
+      remark: "this-from-_default.page.server.tsx-file",
+    },
+  };
 }
-
-
-
-
-
-

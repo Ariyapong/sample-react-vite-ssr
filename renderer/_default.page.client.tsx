@@ -33,8 +33,9 @@ export { onPageTransitionEnd };
 export const clientRouting = true;
 export const hydrationCanBeAborted = true;
 
+import '../public/antd.min.css'
 // import '#root/assets/styles/global.styles.scss';
-import "#root/assets/styles/global.styles.scss"
+import "#root/assets/styles/global.styles.scss";
 import styles from "#root/assets/styles/test.styles.module.scss";
 // import "./css/index.css";
 import React from "react";
@@ -43,6 +44,8 @@ import { PageShell } from "./PageShell";
 import { getPageTitle } from "./getPageTitle";
 import type { PageContextClient } from "./types";
 
+import { StyleProvider } from "@ant-design/cssinjs";
+import withTheme from "../pages/theme";
 // import Chips from '#root/components/Chips'
 
 let root: ReactDOM.Root;
@@ -54,11 +57,14 @@ async function render(pageContext: PageContextClient) {
   // <Chips />
   const page = (
     <PageShell pageContext={pageContext}>
+      {/* <StyleProvider hashPriority="high"> */}
+      {/* <p className={`${styles.testColor} font-bold`}>test style</p> */}
       {/* <p className={`font-bold `}>test style</p> */}
-      <p className={`${styles.testColor} font-bold`}>test style</p>
       <Page {...pageProps} />
+      {/* </StyleProvider> */}
     </PageShell>
   );
+
   const container = document.getElementById("react-root")!;
   if (pageContext.isHydration) {
     root = ReactDOM.hydrateRoot(container, page);

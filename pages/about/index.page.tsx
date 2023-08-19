@@ -1,6 +1,6 @@
-import './code.css'
-
-export { Page }
+import "./code.css";
+import { DatePicker, Input, Button } from "antd";
+export { Page };
 
 function Page() {
   return (
@@ -9,6 +9,9 @@ function Page() {
       <p>
         Example of using <code>vite-plugin-ssr</code>.
       </p>
+      <DatePicker />
+      <Input />
+      <Button>Button</Button>
     </>
-  )
+  );
 }
